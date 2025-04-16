@@ -12,7 +12,7 @@ import logging
 import sys
 import os
 from sqlalchemy import create_engine, Column, Integer, Float, String, DateTime, ForeignKey
-from sqlalchemy.orm import declarative_base, sessionmaker, relationship
+from sqlalchemy.orm import DeclarativeBase, sessionmaker, relationship
 import json
 
 # Set up logging
@@ -176,8 +176,9 @@ if 'input_values' not in st.session_state:
         'put_purchase_price': 0.0
     }
 
-# Initialize SQLAlchemy
-Base = declarative_base()
+# Update Base class definition
+class Base(DeclarativeBase):
+    pass
 
 class Calculation(Base):
     __tablename__ = 'calculations'
@@ -372,7 +373,7 @@ def main():
     
     try:
         st.markdown('<h1 class="main-header">Black-Scholes Model</h1>', unsafe_allow_html=True)
-        
+    
         # Description
         st.markdown(
             '<div class="description">'
@@ -382,7 +383,7 @@ def main():
             '</div>',
             unsafe_allow_html=True
         )
-
+    
         # Create columns for the layout
         col1, col2 = st.columns([1, 2])
 
@@ -443,11 +444,11 @@ def main():
                 key="risk_free_rate_input",
                 on_change=update_risk_free_rate
             )
-            
+        
             st.markdown("---")
-            
+        
             st.markdown('<div class="sidebar-header">Heatmap Parameters</div>', unsafe_allow_html=True)
-            
+        
             def update_min_spot_price():
                 st.session_state.input_values['min_spot_price'] = st.session_state.min_spot_price_input
             min_spot_price = st.number_input(
@@ -517,7 +518,7 @@ def main():
                 key="put_purchase_price_input",
                 on_change=update_put_purchase_price
             )
-            
+        
             # Calculate button
             calculate = st.button("Calculate", key="calculate")
             
@@ -872,19 +873,19 @@ def main():
                 # Calculate P&L if purchase prices are provided
                 call_pnl = call_price_value - call_purchase_price if call_purchase_price > 0 else 0
                 put_pnl = put_price_value - put_purchase_price if put_purchase_price > 0 else 0
-                
-                # Display basic results
+        
+        # Display basic results
                 st.markdown('<div class="sub-header">Options Price - Interactive Heatmap</div>', unsafe_allow_html=True)
                 
-                col1, col2 = st.columns(2)
-                with col1:
+        col1, col2 = st.columns(2)
+        with col1:
                     st.metric("Call Option Price", f"${call_price_value:.2f}")
                     if call_purchase_price > 0:
                         st.markdown(
                             f"P&L: <span class=\"{'pnl-positive' if call_pnl >= 0 else 'pnl-negative'}\">${call_pnl:.2f}</span>", 
                             unsafe_allow_html=True
                         )
-                with col2:
+        with col2:
                     st.metric("Put Option Price", f"${put_price_value:.2f}")
                     if put_purchase_price > 0:
                         st.markdown(
@@ -893,17 +894,17 @@ def main():
                         )
                 
                 # Generate heatmap data using Black-Scholes
-                spot_prices = np.linspace(min_spot_price, max_spot_price, 10)
-                volatilities = np.linspace(min_volatility, max_volatility, 10)
-                
+        spot_prices = np.linspace(min_spot_price, max_spot_price, 10)
+        volatilities = np.linspace(min_volatility, max_volatility, 10)
+        
                 # Create arrays for heatmap data
-                call_prices = np.zeros((len(volatilities), len(spot_prices)))
-                put_prices = np.zeros((len(volatilities), len(spot_prices)))
-                call_pnl_matrix = np.zeros((len(volatilities), len(spot_prices)))
-                put_pnl_matrix = np.zeros((len(volatilities), len(spot_prices)))
-                
-                for i, vol in enumerate(volatilities):
-                    for j, spot in enumerate(spot_prices):
+        call_prices = np.zeros((len(volatilities), len(spot_prices)))
+        put_prices = np.zeros((len(volatilities), len(spot_prices)))
+        call_pnl_matrix = np.zeros((len(volatilities), len(spot_prices)))
+        put_pnl_matrix = np.zeros((len(volatilities), len(spot_prices)))
+        
+        for i, vol in enumerate(volatilities):
+            for j, spot in enumerate(spot_prices):
                         call_prices[i, j] = call_price(spot, strike_price, time_to_maturity, risk_free_rate, vol)
                         put_prices[i, j] = put_price(spot, strike_price, time_to_maturity, risk_free_rate, vol)
                         
@@ -912,16 +913,16 @@ def main():
                             call_pnl_matrix[i, j] = call_prices[i, j] - call_purchase_price
                         if put_purchase_price > 0:
                             put_pnl_matrix[i, j] = put_prices[i, j] - put_purchase_price
-                
-                # Create DataFrame for database storage
-                data = []
-                for i, vol in enumerate(volatilities):
-                    for j, spot in enumerate(spot_prices):
+        
+        # Create DataFrame for database storage
+        data = []
+        for i, vol in enumerate(volatilities):
+            for j, spot in enumerate(spot_prices):
                         data_row = {
-                            'spot_price': spot_prices[j],
-                            'volatility': volatilities[i],
-                            'call_price': call_prices[i, j],
-                            'put_price': put_prices[i, j]
+                    'spot_price': spot_prices[j],
+                    'volatility': volatilities[i],
+                    'call_price': call_prices[i, j],
+                    'put_price': put_prices[i, j]
                         }
                         
                         if call_purchase_price > 0:
@@ -930,25 +931,25 @@ def main():
                             data_row['put_pnl'] = put_pnl_matrix[i, j]
                             
                         data.append(data_row)
-                
-                outputs_df = pd.DataFrame(data)
-                
-                # Save to database
-                inputs = {
-                    'asset_price': asset_price,
-                    'strike_price': strike_price,
-                    'time_to_maturity': time_to_maturity,
-                    'volatility': volatility,
-                    'risk_free_rate': risk_free_rate,
-                    'min_spot_price': min_spot_price,
-                    'max_spot_price': max_spot_price,
-                    'min_volatility': min_volatility,
+        
+        outputs_df = pd.DataFrame(data)
+        
+        # Save to database
+        inputs = {
+            'asset_price': asset_price,
+            'strike_price': strike_price,
+            'time_to_maturity': time_to_maturity,
+            'volatility': volatility,
+            'risk_free_rate': risk_free_rate,
+            'min_spot_price': min_spot_price,
+            'max_spot_price': max_spot_price,
+            'min_volatility': min_volatility,
                     'max_volatility': max_volatility,
                     'call_purchase_price': call_purchase_price,
                     'put_purchase_price': put_purchase_price
                 }
                 
-                greeks = {
+        greeks = {
                     'call_delta': call_delta_val,
                     'put_delta': put_delta_val,
                     'gamma': gamma_val,
@@ -959,46 +960,42 @@ def main():
                     'put_rho': put_rho_val
                 }
                 
-                calculation_id = save_to_db(session, inputs, outputs_df, greeks)
-                if calculation_id:
+        calculation_id = save_to_db(session, inputs, outputs_df, greeks)
+        if calculation_id:
                     st.info(f"Calculation saved with ID: {calculation_id}")
                 
                 # Display heatmaps in a grid layout
-                col1, col2 = st.columns(2)
+        col1, col2 = st.columns(2)
                 
-                with col1:
-                    st.markdown('<div class="sub-header">Call Price Heatmap</div>', unsafe_allow_html=True)
-                    with st.container():
-                        st.markdown('<div class="heatmap-container">', unsafe_allow_html=True)
-                        call_fig = plot_heatmap(call_prices, volatilities, spot_prices, "Call", cmap="viridis")
-                        st.pyplot(call_fig)
-                        st.markdown('</div>', unsafe_allow_html=True)
-                    
-                    # Display Call P&L heatmap if purchase price is provided
-                    if call_purchase_price > 0:
-                        st.markdown('<div class="sub-header">Call P&L Heatmap</div>', unsafe_allow_html=True)
-                        with st.container():
-                            st.markdown('<div class="heatmap-container">', unsafe_allow_html=True)
-                            call_pnl_fig = plot_heatmap(call_pnl_matrix, volatilities, spot_prices, "Call", is_pnl=True)
-                            st.pyplot(call_pnl_fig)
-                            st.markdown('</div>', unsafe_allow_html=True)
+        with col1:
+            st.markdown('<div class="sub-header">Call Price Heatmap</div>', unsafe_allow_html=True)
+            st.markdown('<div class="heatmap-container">', unsafe_allow_html=True)
+            call_fig = plot_heatmap(call_prices, volatilities, spot_prices, "Call", cmap="viridis")
+            st.pyplot(call_fig)
+            st.markdown('</div>', unsafe_allow_html=True)
+
+    # Display Call P&L heatmap if purchase price is provided
+            if call_purchase_price > 0:
+                st.markdown('<div class="sub-header">Call P&L Heatmap</div>', unsafe_allow_html=True)
+                st.markdown('<div class="heatmap-container">', unsafe_allow_html=True)
+                call_pnl_fig = plot_heatmap(call_pnl_matrix, volatilities, spot_prices, "Call", is_pnl=True)
+                st.pyplot(call_pnl_fig)
+                st.markdown('</div>', unsafe_allow_html=True)
                 
-                with col2:
-                    st.markdown('<div class="sub-header">Put Price Heatmap</div>', unsafe_allow_html=True)
-                    with st.container():
-                        st.markdown('<div class="heatmap-container">', unsafe_allow_html=True)
-                        put_fig = plot_heatmap(put_prices, volatilities, spot_prices, "Put", cmap="magma")
-                        st.pyplot(put_fig)
-                        st.markdown('</div>', unsafe_allow_html=True)
-                    
-                    # Display Put P&L heatmap if purchase price is provided
-                    if put_purchase_price > 0:
-                        st.markdown('<div class="sub-header">Put P&L Heatmap</div>', unsafe_allow_html=True)
-                        with st.container():
-                            st.markdown('<div class="heatmap-container">', unsafe_allow_html=True)
-                            put_pnl_fig = plot_heatmap(put_pnl_matrix, volatilities, spot_prices, "Put", is_pnl=True)
-                            st.pyplot(put_pnl_fig)
-                            st.markdown('</div>', unsafe_allow_html=True)
+        with col2:
+            st.markdown('<div class="sub-header">Put Price Heatmap</div>', unsafe_allow_html=True)
+            st.markdown('<div class="heatmap-container">', unsafe_allow_html=True)
+            put_fig = plot_heatmap(put_prices, volatilities, spot_prices, "Put", cmap="magma")
+            st.pyplot(put_fig)
+            st.markdown('</div>', unsafe_allow_html=True)
+
+    # Display Put P&L heatmap if purchase price is provided
+            if put_purchase_price > 0:
+                st.markdown('<div class="sub-header">Put P&L Heatmap</div>', unsafe_allow_html=True)
+                st.markdown('<div class="heatmap-container">', unsafe_allow_html=True)
+                put_pnl_fig = plot_heatmap(put_pnl_matrix, volatilities, spot_prices, "Put", is_pnl=True)
+                st.pyplot(put_pnl_fig)
+                st.markdown('</div>', unsafe_allow_html=True)
 
         # Add historical calculations section
         st.markdown("---")

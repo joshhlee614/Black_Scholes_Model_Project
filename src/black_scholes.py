@@ -18,10 +18,18 @@ def d1(S, K, T, r, sigma):
     """
     if sigma <= 0 or T <= 0:
         raise ValueError("Volatility and time to maturity must be positive")
-    if T <= 1e-10:  # At expiration
-        return np.inf if S > K else -np.inf
     if S <= 0 or K <= 0:
         raise ValueError("Stock price and strike price must be positive")
+    
+    # Handle special cases to prevent divide by zero
+    if T <= 1e-10:  # At expiration
+        if abs(S - K) < 1e-10:  # At the money
+            return 0
+        return np.inf if S > K else -np.inf
+    
+    if abs(sigma * np.sqrt(T)) < 1e-10:
+        return np.inf if S > K else -np.inf
+        
     return (np.log(S/K) + (r + sigma**2/2)*T) / (sigma * np.sqrt(T))
 
 def d2(S, K, T, r, sigma):
@@ -39,10 +47,18 @@ def d2(S, K, T, r, sigma):
     """
     if sigma <= 0 or T <= 0:
         raise ValueError("Volatility and time to maturity must be positive")
-    if T <= 1e-10:  # At expiration
-        return np.inf if S > K else -np.inf
     if S <= 0 or K <= 0:
         raise ValueError("Stock price and strike price must be positive")
+    
+    # Handle special cases
+    if T <= 1e-10:  # At expiration
+        if abs(S - K) < 1e-10:  # At the money
+            return 0
+        return np.inf if S > K else -np.inf
+        
+    if abs(sigma * np.sqrt(T)) < 1e-10:
+        return np.inf if S > K else -np.inf
+    
     return d1(S, K, T, r, sigma) - sigma * np.sqrt(T)
 
 def call_price(S, K, T, r, sigma):
