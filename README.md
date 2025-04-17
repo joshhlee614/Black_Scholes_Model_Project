@@ -1,15 +1,35 @@
 # Black-Scholes Option Pricing Model
 
-A comprehensive implementation of the Black-Scholes option pricing model with interactive visualizations and Greeks analysis.
+A comprehensive implementation of the Black-Scholes option pricing model with interactive visualizations, Greeks analysis, and real-time sensitivity calculations.
 
 ## Features
 
-- European option pricing (calls and puts)
-- Greeks calculations (Delta, Gamma, Theta, Vega, Rho)
-- Interactive sensitivity analysis
-- Real-time visualizations
-- Historical calculation storage
-- Modern web interface using Streamlit
+- **Option Pricing**
+  - European call and put option pricing
+  - Real-time price updates
+  - Interactive parameter adjustment
+  - Put-Call parity validation
+
+- **Greeks Analysis**
+  - Delta: Price sensitivity to underlying asset
+  - Gamma: Delta sensitivity to underlying asset
+  - Theta: Time decay sensitivity
+  - Vega: Volatility sensitivity
+  - Rho: Interest rate sensitivity
+  - Interactive Greeks visualization
+
+- **Sensitivity Analysis**
+  - Stock price sensitivity
+  - Time to maturity analysis
+  - Volatility impact
+  - Interest rate effects
+  - Interactive heatmaps
+
+- **Data Management**
+  - SQLite database integration
+  - Historical calculation storage
+  - Calculation history tracking
+  - Export capabilities
 
 ## Installation
 
@@ -46,35 +66,51 @@ The app will be available at:
 ```
 Black_Scholes_Model_Project/
 ├── src/
-│   └── black_scholes.py      # Core Black-Scholes implementation
+│   ├── black_scholes.py      # Core Black-Scholes implementation
+│   └── database.py          # Database operations
 ├── web/
-│   └── app.py               # Streamlit web application
+│   ├── app.py               # Main Streamlit application
+│   ├── pages/
+│   │   └── black_scholes_page.py  # Black-Scholes theory page
+│   └── static/              # Static assets
 ├── tests/
-│   └── test_black_scholes.py # Unit tests
+│   ├── test_black_scholes.py # Unit tests
+│   └── test_database.py     # Database tests
 ├── requirements.txt         # Project dependencies
 ├── setup.py                # Package configuration
 └── README.md               # Project documentation
 ```
 
-## Features
+## Development
 
-### Option Pricing
-- Calculate European call and put option prices
-- Real-time price updates
-- Interactive parameter adjustment
+### Testing
+Run the test suite:
+```bash
+pytest tests/
+```
 
-### Greeks Analysis
-- Delta: Price sensitivity to underlying asset
-- Gamma: Delta sensitivity to underlying asset
-- Theta: Time decay sensitivity
-- Vega: Volatility sensitivity
-- Rho: Interest rate sensitivity
+Generate test coverage report:
+```bash
+pytest --cov=src tests/
+```
 
-### Visualization
-- Interactive sensitivity plots
-- Greeks heatmaps
-- P&L analysis
-- Historical calculation tracking
+### Code Quality
+- Format code with Black:
+```bash
+black .
+```
+- Check for linting issues:
+```bash
+flake8 .
+```
+- Sort imports:
+```bash
+isort .
+```
+- Type checking:
+```bash
+mypy .
+```
 
 ## Contributing
 
@@ -92,4 +128,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - Black-Scholes-Merton model
 - Streamlit for the web interface
-- NumPy and SciPy for numerical computations 
+- NumPy and SciPy for numerical computations
+- Plotly for interactive visualizations
+- SQLAlchemy for database operations 

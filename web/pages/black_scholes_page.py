@@ -11,51 +11,121 @@ st.title("The Black-Scholes Model")
 
 st.markdown("""
 ## Introduction
-The Black-Scholes model is a mathematical model for pricing European-style options. It was developed by Fischer Black, Myron Scholes, 
-and Robert Merton in the early 1970s and revolutionized the field of quantitative finance.
+The Black-Scholes model, developed by Fischer Black, Myron Scholes, and Robert Merton in 1973, revolutionized quantitative finance 
+by providing a closed-form solution for European option pricing. This model serves as the foundation for modern derivatives pricing 
+and risk management, particularly in commodities markets where options play a crucial role in hedging and speculation.
 
-## Key Components
-The model takes into account five key parameters:
-1. **Spot Price (S)**: Current price of the underlying asset
-2. **Strike Price (K)**: Price at which the option can be exercised
-3. **Time to Maturity (T)**: Time until the option expires
-4. **Volatility (σ)**: Measure of the asset's price fluctuations
-5. **Risk-free Rate (r)**: Theoretical return on a risk-free investment
+## Mathematical Foundation
 
-## The Formulas
-### Call Option Price
-$C = S \cdot N(d_1) - K \cdot e^{-rT} \cdot N(d_2)$
+### Key Components
+The model incorporates five essential parameters:
+1. **Spot Price (S)**: Current market price of the underlying asset
+2. **Strike Price (K)**: Exercise price of the option
+3. **Time to Maturity (T)**: Time until option expiration (in years)
+4. **Volatility (σ)**: Annualized standard deviation of returns
+5. **Risk-free Rate (r)**: Continuously compounded risk-free interest rate
 
-### Put Option Price
-$P = K \cdot e^{-rT} \cdot N(-d_2) - S \cdot N(-d_1)$
+### The Black-Scholes PDE
+The model is derived from the following partial differential equation:
 
-### Where:
-$d_1 = \frac{\ln(S/K) + (r + \sigma^2/2)T}{\sigma\sqrt{T}}$
+$$\\frac{\\partial V}{\\partial t} + \\frac{1}{2}\\sigma^2S^2\\frac{\\partial^2 V}{\\partial S^2} + rS\\frac{\\partial V}{\\partial S} - rV = 0$$
 
-$d_2 = d_1 - \sigma\sqrt{T}$
+Where:
+- $V$ is the option value
+- $t$ is time
+- $S$ is the stock price
+- $\\sigma$ is volatility
+- $r$ is the risk-free rate
 
-## Applications in This App
-This application demonstrates several key aspects of the Black-Scholes model:
+### Closed-Form Solutions
 
-1. **Price Sensitivity**: The heatmaps show how option prices change with different spot prices and volatility levels
-2. **Put-Call Parity**: The relationship between call and put prices is maintained through the model
-3. **Time Value**: The impact of time to maturity on option prices
-4. **Volatility Impact**: How changes in volatility affect option prices
+#### Call Option Price
+$$C = S \\cdot N(d_1) - K \\cdot e^{-rT} \\cdot N(d_2)$$
 
-## Limitations
-While the Black-Scholes model is foundational, it has some limitations:
-- Assumes constant volatility
-- Assumes continuous trading
-- Assumes no transaction costs
-- Assumes log-normal distribution of returns
-- Only applies to European options
+#### Put Option Price
+$$P = K \\cdot e^{-rT} \\cdot N(-d_2) - S \\cdot N(-d_1)$$
 
-## Practical Use
-In this application, you can:
-1. Calculate option prices for different market scenarios
-2. Visualize how prices change with different parameters
-3. Understand the relationship between calls and puts
-4. Explore the impact of volatility on option prices
+#### Where:
+$$d_1 = \\frac{\\ln(S/K) + (r + \\sigma^2/2)T}{\\sigma\\sqrt{T}}$$
+
+$$d_2 = d_1 - \\sigma\\sqrt{T}$$
+
+### The Greeks
+
+#### Delta (Δ)
+$$\\Delta_{call} = N(d_1)$$
+$$\\Delta_{put} = N(d_1) - 1$$
+
+#### Gamma (Γ)
+$$\\Gamma = \\frac{N'(d_1)}{S\\sigma\\sqrt{T}}$$
+
+#### Theta (Θ)
+$$\\Theta_{call} = -\\frac{S\\sigma N'(d_1)}{2\\sqrt{T}} - rKe^{-rT}N(d_2)$$
+$$\\Theta_{put} = -\\frac{S\\sigma N'(d_1)}{2\\sqrt{T}} + rKe^{-rT}N(-d_2)$$
+
+#### Vega (ν)
+$$\\nu = S\\sqrt{T}N'(d_1)$$
+
+#### Rho (ρ)
+$$\\rho_{call} = KTe^{-rT}N(d_2)$$
+$$\\rho_{put} = -KTe^{-rT}N(-d_2)$$
+
+## Professional Applications
+
+### Risk Management
+- **Delta Hedging**: Creating delta-neutral portfolios
+- **Gamma Scalping**: Profiting from volatility through gamma trading
+- **Vega Hedging**: Managing volatility risk exposure
+- **Portfolio Optimization**: Using Greeks for risk allocation
+
+### Market Making
+- **Bid-Ask Spread Determination**: Using Greeks to set option prices
+- **Inventory Management**: Delta-neutral position maintenance
+- **Volatility Trading**: Capitalizing on implied vs. realized volatility
+
+### Commodities Trading
+- **Energy Derivatives**: Pricing options on crude oil, natural gas
+- **Agricultural Options**: Hedging crop price risks
+- **Metals Trading**: Gold and silver options pricing
+- **Storage Arbitrage**: Incorporating storage costs in pricing
+
+## Model Limitations and Extensions
+
+### Key Limitations
+- Constant volatility assumption
+- Continuous trading assumption
+- No transaction costs
+- Log-normal distribution of returns
+- European exercise only
+
+### Common Extensions
+- Local volatility models
+- Stochastic volatility (Heston model)
+- Jump-diffusion processes
+- American option pricing
+- Commodity-specific adjustments
+
+## Practical Implementation
+
+### Numerical Considerations
+- Efficient computation of normal CDF
+- Handling of edge cases (e.g., T → 0)
+- Numerical stability in Greeks calculation
+- Vectorized implementation for performance
+
+### Market Calibration
+- Implied volatility calculation
+- Volatility surface construction
+- Risk-neutral probability estimation
+- Forward curve incorporation
+
+## Application Features
+This implementation demonstrates:
+1. Real-time option pricing with parameter sensitivity
+2. Comprehensive Greeks calculation and visualization
+3. Multi-dimensional sensitivity analysis
+4. Historical calculation tracking
+5. Professional-grade risk metrics
 """)
 
 st.markdown("""

@@ -9,24 +9,58 @@ st.title("About This Application")
 
 st.markdown("""
 ## Overview
-This interactive application demonstrates the Black-Scholes option pricing model, a fundamental tool in quantitative finance. 
-The app allows users to explore how option prices change with different market parameters and visualize these relationships 
-through interactive heatmaps.
+This comprehensive implementation of the Black-Scholes option pricing model demonstrates advanced quantitative finance concepts 
+and their practical applications in derivatives trading. The application serves as both an educational tool and a professional 
+demonstration of quantitative modeling capabilities, with particular relevance to commodities and energy derivatives markets.
 
-## Features
-- **Interactive Option Pricing**: Calculate European call and put option prices using the Black-Scholes model
-- **Parameter Sensitivity Analysis**: Visualize how option prices change with different spot prices and volatility levels
-- **Educational Tools**: Step-by-step calculation breakdowns and detailed explanations
-- **Real-time Visualization**: Interactive heatmaps showing price sensitivity to market parameters
+## Key Features
 
-## Technical Implementation
-- Built with Python using Streamlit for the frontend
-- Utilizes NumPy and SciPy for numerical computations
-- Implements the Black-Scholes model with proper mathematical notation
-- Features responsive design and interactive visualizations
+### Quantitative Analysis
+- **Advanced Option Pricing**: Implementation of the Black-Scholes-Merton model for European options
+- **Greeks Analysis**: Comprehensive calculation of Delta, Gamma, Theta, Vega, and Rho
+- **Sensitivity Analysis**: Multi-dimensional analysis of option price sensitivity to market parameters
+- **Put-Call Parity**: Validation of fundamental option pricing relationships
+
+### Technical Implementation
+- **Numerical Methods**: Efficient implementation using vectorized NumPy operations
+- **Database Integration**: SQLite backend for historical calculation tracking
+- **Real-time Computation**: Optimized calculations for interactive parameter adjustment
+- **Visualization**: Advanced plotting using Plotly for interactive analysis
+
+### Professional Applications
+- **Risk Management**: Greeks analysis for portfolio hedging
+- **Trading Strategies**: Analysis of option price sensitivity for strategy development
+- **Market Making**: Understanding bid-ask spread dynamics through Greeks
+- **Commodities Trading**: Special focus on energy and agricultural derivatives
+
+## Technical Stack
+- **Core**: Python 3.8+
+- **Numerical Computing**: NumPy, SciPy
+- **Data Management**: SQLAlchemy, pandas
+- **Visualization**: Plotly, Matplotlib
+- **Web Framework**: Streamlit
+- **Development Tools**: pytest, mypy, black, flake8
+
+## Mathematical Rigor
+- Implementation of the Black-Scholes partial differential equation
+- Proper handling of edge cases and numerical stability
+- Validation against known analytical solutions
+- Monte Carlo simulation capabilities (planned)
 
 ## Creator
-Created by Joshua Lee as a demonstration of quantitative finance concepts and interactive web application development.
+Created by Joshua Lee as a demonstration of quantitative finance expertise and full-stack development capabilities. 
+This project showcases:
+- Strong mathematical foundation in derivatives pricing
+- Advanced programming skills in Python
+- Understanding of financial markets and trading
+- Ability to create production-ready quantitative tools
+
+## Future Development
+- Extension to American options
+- Implementation of local volatility models
+- Addition of commodity-specific features
+- Integration with market data APIs
+- Advanced risk metrics calculation
 """)
 
 st.markdown("""
