@@ -5,20 +5,20 @@ setup(
     version="0.1.0",
     packages=find_packages(),
     install_requires=[
-        "numpy==1.24.0",
-        "scipy==1.10.0",
-        "streamlit==1.24.0",
-        "pandas==2.0.0",
-        "matplotlib==3.7.0",
-        "seaborn==0.12.0",
-        "plotly==5.13.0",
-        "sqlalchemy==2.0.0",  # Required for database operations
+        "numpy>=1.24.0",
+        "scipy>=1.10.0",
+        "streamlit>=1.24.0",
+        "pandas>=2.0.0",
+        "matplotlib>=3.7.0",
+        "seaborn>=0.12.0",
+        "plotly>=5.18.0",
+        "sqlalchemy>=2.0.0",  # Required for database operations
     ],
     extras_require={
         "dev": [
-            "pytest==7.3.1",
-            "black==23.3.0",
-            "flake8==6.0.0",
+            "pytest>=7.3.1",
+            "black>=23.3.0",
+            "flake8>=6.0.0",
         ],
     },
     python_requires=">=3.8",
